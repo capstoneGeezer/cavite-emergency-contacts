@@ -162,12 +162,13 @@
     .cities-section .nested-title:hover { background-color: #004080; }
     .municipalities-section .nested-title:hover { background-color: #802e00; }
 
-    /* CONTACT GROUP SPACING FIX */
+    /* ===== CONTACT GROUP SPACING (FINAL FIX) ===== */
+
     .hotline-title {
         font-weight: bold;
         display: block;
-        margin-top: 18px;      /* space before each new department */
-        margin-bottom: 4px;    /* tight to number */
+        margin-top: 20px;   /* space before each department group */
+        margin-bottom: 4px; /* tight spacing to its numbers */
         font-size: 1rem;
     }
 
@@ -175,11 +176,16 @@
         display: flex;
         align-items: center;
         gap: 6px;
-        margin-bottom: 20px;    /* small gap within group */
+        margin-bottom: 6px; /* tight grouping for multiple numbers */
+    }
+
+    /* Add spacing AFTER the last number of each department */
+    .number + .hotline-title {
+        margin-top: 20px;
     }
 
     .nested-content > .hotline-title:first-child {
-        margin-top: 0;         /* no extra space on first item */
+        margin-top: 0;
     }
 
     .copy-btn {
@@ -238,7 +244,6 @@
         .nested-content {
             font-size: 13px;
         }
-
     }
 
     </style>
@@ -410,4 +415,3 @@ populateList(municipalityFiles, document.getElementById('municipalities-list'), 
 
 </body>
 </html>
-
