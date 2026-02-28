@@ -162,11 +162,24 @@
     .cities-section .nested-title:hover { background-color: #004080; }
     .municipalities-section .nested-title:hover { background-color: #802e00; }
 
+    /* CONTACT GROUP SPACING FIX */
+    .hotline-title {
+        font-weight: bold;
+        display: block;
+        margin-top: 18px;      /* space before each new department */
+        margin-bottom: 4px;    /* tight to number */
+        font-size: 1rem;
+    }
+
     .number {
         display: flex;
         align-items: center;
         gap: 6px;
-        flex-wrap: wrap;
+        margin-bottom: 2px;    /* small gap within group */
+    }
+
+    .nested-content > .hotline-title:first-child {
+        margin-top: 0;         /* no extra space on first item */
     }
 
     .copy-btn {
@@ -180,14 +193,12 @@
         transform: scale(1.1);
     }
 
-    /* Tablet */
     @media (max-width: 800px) {
         .side-by-side {
             flex-direction: column;
         }
     }
 
-    /* Mobile */
     @media (max-width: 500px) {
 
         .container {
