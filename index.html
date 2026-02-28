@@ -157,18 +157,21 @@
         transform: scale(0.97);
     }
 
-    .cities-section .city-title:hover { background-color: #9ccfff; }
-    .municipalities-section .city-title:hover { background-color: #ffbf99; }
-    .cities-section .nested-title:hover { background-color: #004080; }
-    .municipalities-section .nested-title:hover { background-color: #802e00; }
+    /* Hover only on real hover devices (fixes mobile sticky dark state) */
+    @media (hover: hover) {
+        .cities-section .city-title:hover { background-color: #9ccfff; }
+        .municipalities-section .city-title:hover { background-color: #ffbf99; }
+        .cities-section .nested-title:hover { background-color: #004080; }
+        .municipalities-section .nested-title:hover { background-color: #802e00; }
+    }
 
-    /* ===== CONTACT GROUP SPACING (FINAL FIX) ===== */
+    /* ===== CONTACT GROUP SPACING ===== */
 
     .hotline-title {
         font-weight: bold;
         display: block;
-        margin-top: 20px;   /* space before each department group */
-        margin-bottom: 4px; /* tight spacing to its numbers */
+        margin-top: 20px;
+        margin-bottom: 4px;
         font-size: 1rem;
     }
 
@@ -176,10 +179,9 @@
         display: flex;
         align-items: center;
         gap: 6px;
-        margin-bottom: 6px; /* tight grouping for multiple numbers */
+        margin-bottom: 6px;
     }
 
-    /* Add spacing AFTER the last number of each department */
     .number + .hotline-title {
         margin-top: 20px;
     }
