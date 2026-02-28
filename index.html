@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cavite Emergency Contacts</title>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Orelega+One&family=Rhodium+Libre&family=Readex+Pro&display=swap" rel="stylesheet">
+
+    <style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+    }
+
+    .container {
+        width: 90%;
+        max-width: 1100px;
+        margin: 30px auto;
+    }
+
+    .section {
+        padding: 25px;
+        margin-bottom: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .header-section {
+        background: linear-gradient(to right,#b30000,#ff4d4d,#b30000);
+        color: white;
+    }
+
+    .header-content {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .header-logo img { width: 45px; height: 40px; opacity: 0.5; }
+    .header-text h1 { font-family: 'Orelega One', cursive; font-size: 36px; margin: 0; letter-spacing: 2px; }
+    .header-text h2 { font-family: 'Rhodium Libre', sans-serif; font-size: 20px; margin: 5px 0 0 0; font-weight: normal; }
+
+    .side-by-side { display: flex; gap: 20px; }
+    .cities-section, .municipalities-section {
+        flex: 1;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        font-family: 'Orelega One', cursive;
+        letter-spacing: 1px;
+        overflow-x: hidden;
+    }
+    .cities-section { background-color: #e6f2ff; }
+    .municipalities-section { background-color: #fff2e6; }
+
+    ul { padding-left: 0; list-style-type: none; }
+    li { margin-bottom: 0px; padding: 5px 10px; border-radius: 6px; }
+
+    .city-title {
+        cursor: pointer;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-weight: bold;
+        transition: background 0.2s ease, transform 0.1s ease;
+    }
+
+    .cities-section .city-title { background-color: #c1e0ff; color: #003366; font-family: 'Rhodium Libre', sans-serif; margin-bottom: 5px; }
+    .municipalities-section .city-title { background-color: #ffe0cc; color: #cc6600; font-family: 'Rhodium Libre', sans-serif; margin-bottom: 5px; }
+
+    .nested-title {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        padding: 10px 14px;
+        background-color: #0065cb;
+        color: #fff;
+        border-radius: 8px;
+        font-family: 'Readex Pro';
+        transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+    .cities-section .nested-title:hover { background-color: #004080; }
+    .municipalities-section .nested-title { background-color: #cc6600; }
+    .municipalities-section .nested-title:hover { background-color: #802e00; }
+
+    /* ----------------- DROPDOWN ANIMATION ----------------- */
+    .dropdown-content, .nested-content {
+        max-height: 0;
+        overflow: hidden;
+        margin-top: 5px;
+        padding: 0 10px;
+        font-size: 14px;
+        background-color: rgba(0,0,0,0.03);
+        border-radius: 10px;
+        opacity: 0;
+        transition: max-height 0.35s ease, opacity 0.3s ease, padding 0.3s ease;
+    }
+    .dropdown-content.open, .nested-content.open {
+        padding: 10px;
+        opacity: 1;
+        max-height: 1000px; /* large enough to fit content */
+    }
+
+    /* ----------------- BUTTON POP EFFECT ----------------- */
+    .city-title:active, .nested-title:active {
+        transform: scale(0.97);
+    }
+
+    /* ----------------- HOVER DARKEN EFFECT ----------------- */
+    .cities-section .city-title:hover { background-color: #9ccfff; }
+    .municipalities-section .city-title:hover { background-color: #ffbf99; }
+    .cities-section .nested-title:hover { background-color: #004080; }
+    .municipalities-section .nested-title:hover { background-color: #802e00; }
+
+    /* Copy button */
+    .number { display: flex; align-items: center; gap: 4px; }
+    .copy-btn { width: 14px; height: 14px; cursor: pointer; transition: transform 0.15s ease; }
+    .copy-btn:hover { transform: scale(1.1); }
+
+    @media (max-width: 800px) { .side-by-side { flex-direction: column; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="section header-section">
+        <div class="header-content">
+            <div class="header-logo"><img src="Logo.png" alt="Cavite Logo"></div>
+            <div class="header-text"><h1>Emergency Contacts</h1><h2>Province of Cavite</h2></div>
+        </div>
+    </div>
+
+    <div class="side-by-side">
+        <div class="cities-section"><h2>Cities</h2><ul id="cities-list"></ul></div>
+        <div class="municipalities-section"><h2>Municipalities</h2><ul id="municipalities-list"></ul></div>
+    </div>
+</div>
+
+<script>
+const style = document.createElement('style');
+style.textContent = `
+.hotline-title {
+    font-weight: bold;
+    margin-top: 1em;
+    margin-bottom: 0.3em;
+    display: block;
+    font-size: 1rem;
+}
+.number {
+    font-weight: normal;
+    display: inline-block;
+    margin-right: 2em;
+    margin-bottom: 0.2em;
+    vertical-align: middle;
+}
+.nested-content > .hotline-title:first-child {
+    margin-top: 0;
+}
+`;
+document.head.appendChild(style);
+
+function expandDropdown(el){ el.classList.add('open'); }
+function collapseDropdown(el){
+    el.classList.remove('open');
+    el.querySelectorAll('.nested-content').forEach(n=>n.classList.remove('open'));
+}
+
+function attachNestedListeners(container){
+    container.querySelectorAll('.nested-title').forEach(title=>{
+        title.addEventListener('click', function(e){
+            e.stopPropagation();
+            const content = this.nextElementSibling;
+            if(!content) return;
+            container.querySelectorAll('.nested-content').forEach(n=>{
+                if(n!==content) n.classList.remove('open');
+            });
+            content.classList.toggle('open');
+        });
+    });
+}
+
+let activeCopyBtn = null; // keeps track of the currently checked button
+
+function copyNumber(event, number){
+    event.stopPropagation();
+
+    navigator.clipboard.writeText(number).then(()=>{
+        const btn = event.target; // the clicked <img> element
+        const originalSrc = btn.src; // store the original icon
+
+        // If another button is showing check, revert it immediately
+        if(activeCopyBtn && activeCopyBtn !== btn){
+            activeCopyBtn.src = activeCopyBtn.dataset.originalSrc;
+            clearTimeout(activeCopyBtn._timeoutId);
+        }
+
+        // Store original src on the button itself (in case it's not stored yet)
+        btn.dataset.originalSrc = originalSrc;
+
+        // Change to check icon
+        btn.src = 'check_icon.svg';
+        activeCopyBtn = btn;
+
+        // Revert back after 2 seconds
+        btn._timeoutId = setTimeout(()=>{
+            btn.src = btn.dataset.originalSrc;
+            if(activeCopyBtn === btn) activeCopyBtn = null;
+        }, 2000);
+
+    }).catch(err=>{
+        console.error('Failed to copy number:', err);
+    });
+}
+
+function populateList(fileArray, listElement, folderName){
+    fileArray.forEach(file=>{
+        const li = document.createElement('li');
+        li.innerHTML = `<div class="city-title">${file.replace('.html','')}</div><div class="dropdown-content"></div>`;
+        const title = li.querySelector('.city-title');
+        const dropdown = li.querySelector('.dropdown-content');
+
+        title.addEventListener('click', function(e){
+            e.stopPropagation();
+
+            // Close all other city dropdowns
+            listElement.querySelectorAll('.dropdown-content').forEach(d=>{
+                if(d!==dropdown) collapseDropdown(d);
+            });
+
+            // If already loaded
+            if(dropdown.dataset.loaded==='true'){
+                if(dropdown.classList.contains('open')){
+                    // Close the city + all nested blocks
+                    collapseDropdown(dropdown);
+                } else {
+                    expandDropdown(dropdown);
+                }
+                return;
+            }
+
+            // First time loading
+            fetch(folderName+'/'+file).then(res=>{
+                if(!res.ok) throw new Error('File not found');
+                return res.text();
+            }).then(html=>{
+                dropdown.innerHTML = html;
+                dropdown.dataset.loaded='true';
+                attachNestedListeners(dropdown);
+                expandDropdown(dropdown);
+            }).catch(err=>{
+                console.error('Loading error:', folderName+'/'+file, err);
+                dropdown.innerHTML="<p>Error loading data.</p>";
+                expandDropdown(dropdown);
+            });
+        });
+
+        listElement.appendChild(li);
+    });
+}
+
+const cityFiles=['Bacoor City.html',
+'Carmona City.html',
+'Cavite City.html',
+'Dasmariñas City.html',
+'General Trias City.html',
+'Imus City.html',
+'Tagaytay City.html',
+'Trece Martires City.html'];
+
+const municipalityFiles=['Alfonso Municipality.html',
+'Amadeo Municipality.html',
+'General Emilio Aguinaldo Municipality.html',
+'General Mariano Alvarez Municipality.html',
+'Indang Municipality.html',
+'Kawit Municipality.html',
+'Magallanes Municipality.html',
+'Maragondon Municipality.html',
+'Mendez Municipality.html',
+'Naic Municipality.html',
+'Noveleta Municipality.html',
+'Rosario Municipality.html',
+'Silang Municipality.html',
+'Tanza Municipality.html',
+'Ternate Municipality.html'];
+
+populateList(cityFiles, document.getElementById('cities-list'), 'Cities');
+populateList(municipalityFiles, document.getElementById('municipalities-list'), 'Municipalities');
+</script>
+</body>
+</html>
